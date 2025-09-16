@@ -13,7 +13,7 @@ namespace mazeCli
             Console.CursorVisible = false;
             var mapGenerator = new MapGenerator();
             var player = new Player();
-            var maze = mapGenerator.Generating(15, 25);
+            var maze = mapGenerator.Generating(29, 51);
             var Finish = mapGenerator.Finish;
             var mapRenderer = new MapRenderer(maze,Finish, player);
             mapRenderer.MapRendering();
