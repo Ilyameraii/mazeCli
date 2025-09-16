@@ -4,13 +4,16 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace mazeCli
 {
     internal class MapGenerator
     {
+        public Point Finish = new Point();
         public char[,] Generating(int width, int height)
         {
+            // заполнение игровой карты "стенками"
             char[,] maze = new char[width, height];
             for (int i = 0; i < maze.GetLength(0); i++)
             {
@@ -19,12 +22,24 @@ namespace mazeCli
                     maze[i, j] = '#';
                 }
             }
-            int startX = Program.StartX;
-            int startY = Program.StartY;
+            
+            // координаты начала игры (где будет стоять игрок)
+            int startX = Constants.StartX;
+            int startY = Constants.StartY;
+
+            // стэк понадобится для работы алгоритма
             var stack = new Stack<(int x, int y)>();
             stack.Push((startX, startY));
             maze[startY, startX] = ' ';
 
+            //координаты финиша
+            Finish.x = 0;
+            Finish.y = 0;
+
+            //максимальное число одновременно запомненных ходов стеком
+            int maxCount = 0;
+
+            // алгоритм для создания лабиринта (часть стенок заменяется пустым пространством так, чтобы образовался лабиринт)
             while (stack.Count > 0)
             {
                 var current = stack.Peek();
@@ -42,30 +57,21 @@ namespace mazeCli
                     maze[nextY, nextX] = ' ';
 
                     stack.Push((nextX, nextY));
+
                 }
                 else
                 {
+                    
+                    if (maxCount < stack.Count) // алогритм для нахождения самой дальней для игрока точки
+                    {
+                        maxCount = stack.Count;
+                        Finish.x = stack.Peek().x;
+                        Finish.y = stack.Peek().y;
+                    }
+
                     stack.Pop();
                 }
             }
-            // находим точку финала (должна быть в самом возможном конце от игрока)
-            int finalX=1;
-            int finalY=1;
-            for (int i = 0; i < maze.GetLength(0); i++)
-            {
-                for (int j = 0; j < maze.GetLength(1); j++)
-                {
-                    if (maze[i,j]==' ')
-                    {
-                        if(i+j > finalX + finalY)
-                        {
-                            finalX = j;
-                            finalY = i;
-                        }
-                    }
-                }
-            }
-            maze[finalY, finalX] = 'o';
             return maze;
         }
         private List<(int dx, int dy)> GetValidDirections(int x, int y, char[,] maze)

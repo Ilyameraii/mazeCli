@@ -11,28 +11,26 @@ namespace mazeCli
         public char Skin;
         public int PosX;
         public int PosY;
-        public int newX;
-        public int newY;
         public Player()
-        {
-            Skin = Program.Skin;
-            PosX = Program.StartX;
-            PosY = Program.StartY;
+        { 
+            Skin = Constants.Skin;
+            PosX = Constants.StartX;
+            PosY = Constants.StartY;
         }
         public void Move(int direction)
         {
             switch (direction)
             {
-                case Program.UP:
+                case Constants.UP:
                     PosY -= 1;
                     break;
-                case Program.RIGHT:
+                case Constants.RIGHT:
                     PosX += 1;
                     break;
-                case Program.DOWN:
+                case Constants.DOWN:
                     PosY += 1;
                     break;
-                case Program.LEFT:
+                case Constants.LEFT:
                     PosX -= 1;
                     break;
                 default: break;
